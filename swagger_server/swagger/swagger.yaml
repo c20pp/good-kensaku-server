@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: good_kensaku
+  license:
+    name: MIT
+  version: 1.0.0
+servers:
+- url: http://localhost:8080/api
+paths:
+  /filters:
+    post:
+      summary: urlから判断する
+      operationId: filters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+        required: true
+      responses:
+        "200":
+          description: 結果を{0, 1}で取得
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+              example:
+              - 0
+              - 1
+              - 0
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    body:
+      type: object
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+    inline_response_200:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: integer
+      example:
+        results:
+        - 0
+        - 0
+
