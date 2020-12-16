@@ -20,10 +20,8 @@ def filters(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Body.from_dict(connexion.request.get_json())  # noqa: E501
-    response = {
-        "results": []
-    }
+    response = []
     for _, _ in enumerate(body.urls):
         # ランダムな整数を生成
-        response["results"].append(random.randint(0, 1))
+        response.append(random.randint(0, 1))
     return response
