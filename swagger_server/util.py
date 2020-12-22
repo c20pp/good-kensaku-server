@@ -3,6 +3,10 @@ import datetime
 import six
 import typing
 
+import pandas as pd
+from swagger_server import embedder
+from typing import List
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
@@ -140,3 +144,19 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
+
+class ModelMaker:
+    embedder2 = embedder.Embedder()
+
+    # example : loadDataFrame(["https://www.sejuku.net/",...]), get htmlに対応するdomain
+    def loadDataFrame(self, texts: List[str]) -> pd.DataFrame:
+        df_list = []
+        vecs = ["vec_{:03}".format(i) for i in range(1, 301)]
+        #htmls = [open(path, 'r', encoding="utf-8").read() for path in fullpath_list]
+        df = pd.DataFrame()
+        # テキスト集合にする
+        for text in texts:
+            vec = pd.Series(self.embedder2.doc2vec(text), index = vecs)
+            df = df.append(vec, ignore_index=True)
+        # target列は指定されたもので共通, txtは無視
+        return df
