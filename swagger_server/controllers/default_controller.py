@@ -32,6 +32,6 @@ def filters(body):  # noqa: E501
     df = MM.loadDataFrame(texts)
     with open("/usr/src/app/data/model_ver_1_0_0.pickle", mode="rb") as fp:
         classifier = pickle.load(fp)
-    response = classifier.predict(df)
+    response = classifier.predict(df).tolist()
 
     return response
