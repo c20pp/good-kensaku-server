@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -q -y \
 RUN git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git > /dev/null 
 RUN mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -y --ignore_noun_ortho --ignore_noun_sahen_conn_ortho
 
+RUN ln -s /etc/mecabrc /usr/local/etc/mecabrc
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 

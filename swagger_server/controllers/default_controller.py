@@ -30,7 +30,7 @@ def filters(body):  # noqa: E501
         texts.append(text)
     MM = util.ModelMaker()
     df = MM.loadDataFrame(texts)
-    with open("model_ver_1_0_0.pickle", mode="rb") as fp:
+    with open("/usr/src/app/data/model_ver_1_0_0.pickle", mode="rb") as fp:
         classifier = pickle.load(fp)
     response = classifier.predict(df)
 

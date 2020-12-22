@@ -15,9 +15,9 @@ class Embedder:
         """
         self.model_type = model_type
         if model_type == "doc2vec":
-            self.model = Doc2Vec.load("/content/drive/Shareddrives/システム設計構築演習/jawiki.doc2vec.dbow300d/jawiki.doc2vec.dbow300d.model")
+            self.model = Doc2Vec.load("/usr/src/app/data/jawiki.doc2vec.dbow300d.model")
         elif model_type == "fasttext":
-            self.model = KeyedVectors.load_word2vec_format("/content/drive/Shareddrives/システム設計構築演習/fasttext/fasttext_model.bin", binary=True)
+            self.model = KeyedVectors.load_word2vec_format("/usr/src/app/data/fasttext_model.bin", binary=True)
 
     def _tokenize(self, text):
         """
