@@ -3,6 +3,8 @@ import requests
 from typing import List
 import re
 
+from swagger_server import html2text
+
 
 def find_url_from_html(html: str, baseurl: str) -> str:
     domain_match = re.match("https?://[^/\"]+", baseurl)
@@ -60,13 +62,12 @@ def oneURL_to_2htmls(url: str) -> List[str]:
 
     return result_htmls
 def oneURL2text(url: str) -> str:
-    return html2text(oneURL_to_2htmls(url))[0]
+    return html2text.html2text(oneURL_to_2htmls(url))[0]
     
 def test():
     oneURL_to_2htmls("https://trap.jp/post/945/")
 def test2():
     pass
-    from html2text import html2text
     base_url = "https://trap.jp/post/945/"
     bodies = html2text(oneURL_to_2htmls(base_url))
     print(base_url)
