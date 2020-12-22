@@ -46,18 +46,27 @@ def find_url_from_html(html: str, baseurl: str) -> str:
         return ""
     return domain + "/" + found_uri
 
+charset_regex = re.compile(b"charset\\s*=\\s*['\"]([a-zA-Z0-9_\\-]+)['\"]", flags=re.IGNORECASE)
+def decode_to_str(html_content: bytes):
+    #html_content = open("test.html", 'rb').read()
+    charset = b'utf-8'
+    charset_in_html = charset_regex.search(html_content)
+    if charset_in_html:
+        charset = charset_in_html.group(1)
+    return html_content.decode(charset.decode('utf-8')) #getしたhtml(string)
+
 def oneURL_to_2htmls(url: str) -> List[str]:
     result_htmls = []
 
     html = requests.get(url) # getしたhtml(bytes)
-    html_code = html.content.decode('utf-8') #getしたhtml(string)
+    html_code = decode_to_str(html.content) #getしたhtml(string)
     result_htmls.append(html_code)
 
     foundurl = find_url_from_html(html_code, url)
     #print(foundurl)
     if foundurl != "":
         html = requests.get(foundurl) # getしたhtml(bytes)
-        html_code = html.content.decode('utf-8') #getしたhtml(string)
+        html_code = decode_to_str(html.content) #getしたhtml(string)
         result_htmls.append(html_code)
 
     return result_htmls
