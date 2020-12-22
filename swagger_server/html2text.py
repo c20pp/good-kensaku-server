@@ -2,6 +2,21 @@
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString
 import re
+import random
+
+import bs4
+assert '4.9.3' <= bs4.__version__, "please upgrade BeautifulSoup"
+
+def getBeautifulSoupBody(html):
+    bodyend_i = html.rfind("</body>")
+    if bodyend_i==-1:
+        bodyend_i = len(html)
+    else:
+        bodyend_i = bodyend_i + len("</body>")
+    html = html[max(0,html.find("<body>")):bodyend_i]
+    body = BeautifulSoup(html.replace("</li>", "\n</li>"), "lxml").find("body")
+    del html
+    return body
 
 # text_setを生成する
 # text_setは各葉ノードのテキストと木構造を表す
@@ -30,12 +45,13 @@ def removetags(tag, remove_text_set, tag_string):
             removetags(content, remove_text_set, tag_string + str.lower(content.name))
     for content in remove_lists:
         content.extract()
+    del remove_lists
 #imgとかを良い感じに処理したい
 def converttags(tag):
     for content in tag.contents:
         if isinstance(content, NavigableString):
             pass
-        elif str.lower(content.name) in ["img"]:
+        elif str.lower(content.name) == "img":
             content.string = " <<<img>>> "
         else:
             converttags(content)
@@ -46,10 +62,13 @@ from typing import List
 # 同じドメインのhtml(string)群を受け取って、タグを削除したstringのlistを返す
 def html2text(htmls: List[str]) -> List[str]:
     # 文字列抽出
-    soups = [BeautifulSoup(html.replace("</li>", "\n</li>"), "html.parser") for html in htmls]
-    #bodies = [soup.find("body").text for soup in soups]
+    # soups = [BeautifulSoup(html.replace("</li>", "\n</li>"), "html.parser")
+    #         for html in htmls[:min(3,len(htmls))]]
+    # #bodies = [soup.find("body").text for soup in soups]
 
-    bodies = [soup.find("body") for soup in soups]
+    # bodies = [soup.find("body") for soup in soups]
+    # del soups
+    bodies = [ getBeautifulSoupBody(html) for html in htmls[:min(3,len(htmls))]]
 
     #img等のテキスト化
     for body in (bodies):
@@ -64,7 +83,10 @@ def html2text(htmls: List[str]) -> List[str]:
         if 3 <= len(bodies):
             set2 = soup2textset(bodies[2], set(), "")
             remove_set = frozenset(remove_set | (set2 & set0)  | (set2 & set1))
+            del set2
         #print(remove_set)
+        del set0
+        del set1
         # 重複要素の削除
         for i in range(len(bodies)):
             removetags(bodies[i], remove_set, "")
@@ -72,6 +94,18 @@ def html2text(htmls: List[str]) -> List[str]:
     #soup => textの変換
     for i in range(len(bodies)):
         bodies[i] = bodies[i].text
+
+    # 残り
+    for i in range(3, len(htmls)):
+        html = htmls[i]
+        body = getBeautifulSoupBody(html)
+        converttags(body)
+        if 2 <= len(bodies):
+            removetags(body, remove_set, "")
+        bodies.append(body.text)
+        del body
+        del html
+    # del remove_set
 
     # 空行削除
     emptyline_regex = re.compile('\n\\s*\n')
@@ -82,8 +116,11 @@ def html2text(htmls: List[str]) -> List[str]:
 
 def test():
     import os
-    html_names = os.listdir("./data/sejuku")
-    htmls = [open("./data/sejuku/" + html, 'r', encoding="utf-8").read() for html in html_names]
+    path = "/content/drive/Shareddrives/システム設計構築演習/data/sejuku/"
+    html_names = os.listdir(path)
+    html_names = [ html for html in html_names if html[-5:]==".html"]
+    htmls = [open(path + html, 'r', encoding="utf-8").read() for html in html_names]
+    random.shuffle(htmls)
     bodies = html2text(htmls)
 
     print(html_names[0])
@@ -102,7 +139,11 @@ def test():
     print(bodies[2][-100:])
     print("====================")
     # print(bodies[0].replace('\xa9', '(c)').replace('\xa0', ''))
+    del html_names
+    del htmls
+    del bodies
 
 if __name__=="__main__":
     test()
+    pass
 
