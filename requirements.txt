@@ -8,3 +8,4 @@ pandas == 1.1.5
 gensim
 beautifulsoup4
 lxml
+scikit-learn == 0.22.2.post1
