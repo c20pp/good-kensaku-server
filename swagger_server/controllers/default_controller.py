@@ -26,8 +26,14 @@ def filters(body):  # noqa: E501
     response = []
     texts = []
     for _, url in enumerate(body.urls):
-        text = oneURL2text.oneURL2text(url)
-        texts.append(text)
+        try:
+            text = oneURL2text.oneURL2text(url)
+            texts.append(text)
+        except Exception as e:
+            with open("/usr/src/app/data/error.csv", mode="a") as f:
+                f.writelines([str(e), ", ", url, "\n"])
+            raise e
+    
     MM = util.ModelMaker()
     df = MM.loadDataFrame(texts)
     with open("/usr/src/app/data/model_ver_1_0_0.pickle", mode="rb") as fp:
