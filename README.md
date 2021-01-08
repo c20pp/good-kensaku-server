@@ -11,14 +11,7 @@ This example uses the [Connexion](https://github.com/zalando/connexion) library 
 Python 3.8+
 
 ## Usage
-To run the server, please execute the following from the root directory:
-
-```
-pip3 install -r requirements.txt
-python3 -m swagger_server
-```
-
-and open your browser to here:
+open your browser to here:
 
 ```
 http://localhost:8080/api/ui/
@@ -36,9 +29,11 @@ sudo pip install tox
 tox
 ```
 
-## Running with Docker
-
-To run the server on a Docker container, please execute the following from the root directory:
+## Dockerで動かす
+- `./data`に`jawiki.doc2vec.dbow300d.model.*`を置く
+    - ファイルがでかいので注意
+- `./data`に`model.pickle`を置く
+    - `model_ver_1_0_0.pickle`は動作確認済み
 
 ```bash
 # building the image
