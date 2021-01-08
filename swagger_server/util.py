@@ -146,8 +146,7 @@ def _deserialize_dict(data, boxed_type):
             for k, v in six.iteritems(data)}
 
 class ModelMaker:
-    def __init__(self) -> None:
-        self.embedder2 = embedder.Embedder()
+    embedder2 = embedder.Embedder()
 
     # example : loadDataFrame(["https://www.sejuku.net/",...]), get htmlに対応するdomain
     def loadDataFrame(self, texts: List[str]) -> pd.DataFrame:
