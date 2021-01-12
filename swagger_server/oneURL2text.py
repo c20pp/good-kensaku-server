@@ -5,6 +5,15 @@ import re
 
 from swagger_server import html2text
 
+def get_filename_reg(path: str)->str:
+    res = ""
+    for i in range(len(path)-1, -1, -1):
+        if path[i] == '/':
+            return "[^.\"]*" #/:id 等
+        res += path[i]
+        if path[i] == '.':
+            break
+    return "[^\"]*" + re.escape(res[::-1])
 
 def find_url_from_html(html: str, baseurl: str) -> str:
     domain_match = re.match("https?://[^/\"]+", baseurl)
@@ -13,7 +22,9 @@ def find_url_from_html(html: str, baseurl: str) -> str:
         return None
     domain = domain_match.group(0)
     #print(domain)
-    url_regex = re.compile("\"(" + re.escape(domain) + ")?/([^\"]*)\"")
+    filename_reg = get_filename_reg(baseurl)
+    #print(filename_reg)
+    url_regex = re.compile("\"(" + re.escape(domain) + ")?/(([^/\"]+/)*" + filename_reg +")\"")
     
     found_uri = ""
     longest_prefix = -1
@@ -44,6 +55,7 @@ def find_url_from_html(html: str, baseurl: str) -> str:
 
     if found_uri == "":
         return ""
+    #print(domain + "/" + found_uri)
     return domain + "/" + found_uri
 
 charset_regex = re.compile(b"charset\\s*=\\s*['\"]([a-zA-Z0-9_\\-]+)['\"]", flags=re.IGNORECASE)
@@ -78,7 +90,7 @@ def test():
 def test2():
     pass
     base_url = "https://trap.jp/post/945/"
-    bodies = html2text(oneURL_to_2htmls(base_url))
+    bodies = html2text.html2text(oneURL_to_2htmls(base_url))
     print(base_url)
     print(bodies[0][:100])
     print("........")
