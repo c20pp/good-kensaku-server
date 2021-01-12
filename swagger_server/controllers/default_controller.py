@@ -34,8 +34,8 @@ def filters(body):  # noqa: E501
                 f.writelines([str(e), ", ", url, "\n"])
             raise e
     
-    MM = util.ModelMaker()
-    df = MM.loadDataFrame(texts)
+    predictor = util.Predictor()
+    df = predictor.predict(texts)
     with open("/usr/src/app/data/model.pickle", mode="rb") as fp:
         classifier = pickle.load(fp)
     response = classifier.predict(df).tolist()

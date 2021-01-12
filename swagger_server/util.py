@@ -7,6 +7,18 @@ import pandas as pd
 from swagger_server import embedder
 from typing import List
 
+# 以下BoW + lightGBM で必要なimport
+import MeCab
+import typing
+import pandas as pd
+import lightgbm as lgb
+from typing import List
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+from gensim import corpora, models
+import re
+import pickle
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
@@ -145,18 +157,22 @@ def _deserialize_dict(data, boxed_type):
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
 
-class ModelMaker:
-    embedder2 = embedder.Embedder()
 
-    # example : loadDataFrame(["https://www.sejuku.net/",...]), get htmlに対応するdomain
-    def loadDataFrame(self, texts: List[str]) -> pd.DataFrame:
-        df_list = []
-        vecs = ["vec_{:03}".format(i) for i in range(1, 301)]
-        #htmls = [open(path, 'r', encoding="utf-8").read() for path in fullpath_list]
-        df = pd.DataFrame()
-        # テキスト集合にする
-        for text in texts:
-            vec = pd.Series(self.embedder2.doc2vec(text), index = vecs)
-            df = df.append(vec, ignore_index=True)
-        # target列は指定されたもので共通, txtは無視
-        return df
+class Predictor:
+    def __init__(self) -> None:
+        self.mt = MeCab.Tagger("")
+    
+    def predict(self, texts: List[str]) -> List[int]:
+        with open('P A T H/dictionary.pickle', mode='rb') as f:
+            dictionary = pickle.load(f)
+        with open('P A T H//gbm.pickle', mode='rb') as f:
+            gbm = pickle.load(f)
+        tokens = [self._tokenize(text) for text in texts]
+        bag = [dictionary.doc2bow(token) for token in tokens]
+        tfidf_model = models.TfidfModel(bag)
+        tfidf_corpus = tfidf_model[bag]
+        lsi_model = models.LsiModel(tfidf_corpus, id2word=dictionary, num_topics=300)
+        lsi_corpus = lsi_model[tfidf_corpus]
+        vec = [[tup[1] for tup in vec] for vec in lsi_corpus]
+        prob = gbm.predict(vec)
+        return prob
