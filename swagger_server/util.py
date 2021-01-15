@@ -5,6 +5,7 @@ import typing
 
 import pandas as pd
 from swagger_server import embedder
+from swagger_server import __main__
 from typing import List
 
 # 以下BoW + lightGBM で必要なimport
@@ -176,3 +177,8 @@ class Predictor:
         vec = [[tup[1] for tup in vec] for vec in lsi_corpus]
         prob = gbm.predict(vec)
         return prob
+
+    # 単語に分割する
+    def _tokenize(self, text: str) -> List[str]:
+        text = re.sub(r'[0-9０-９]+', " ", text)
+        return  MeCab.Tagger("-Owakati").parse(text).strip().split()
