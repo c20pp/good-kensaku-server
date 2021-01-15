@@ -163,9 +163,9 @@ class Predictor:
         self.mt = MeCab.Tagger("")
     
     def predict(self, texts: List[str]) -> List[int]:
-        with open('P A T H/dictionary.pickle', mode='rb') as f:
+        with open(f'{__main__.DATA_PATH}/dictionary.pickle', mode='rb') as f:
             dictionary = pickle.load(f)
-        with open('P A T H//gbm.pickle', mode='rb') as f:
+        with open(f'{__main__.DATA_PATH}/gbm.pickle', mode='rb') as f:
             gbm = pickle.load(f)
         tokens = [self._tokenize(text) for text in texts]
         bag = [dictionary.doc2bow(token) for token in tokens]
