@@ -8,5 +8,7 @@ beautifulsoup4>=4.9.3
 lxml>=4.6.2
 mecab-python3
 pandas == 1.1.5
-gensim
+gensim == 3.6.0
 scikit-learn == 0.22.2.post1
+
+lightgbm == 2.2.3
