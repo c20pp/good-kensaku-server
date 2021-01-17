@@ -35,7 +35,7 @@ def filters(body):  # noqa: E501
             with open(f"{__main__.DATA_PATH}/error.csv", mode="a") as f:
                 f.writelines([str(e), ", ", url, "\n"])
             raise e
-    
+
     predictor = util.Predictor()
     response = predictor.predict(texts)
 

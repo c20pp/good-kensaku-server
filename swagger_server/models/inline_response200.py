@@ -14,7 +14,8 @@ class InlineResponse200(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, results: List[int]=None):  # noqa: E501
+
+    def __init__(self, results: List[int] = None):  # noqa: E501
         """InlineResponse200 - a model defined in Swagger
 
         :param results: The results of this InlineResponse200.  # noqa: E501
