@@ -6,3 +6,19 @@ services:
       - "8080:8080"
     volumes:
       - "./data:/usr/src/app/data"
+    depends_on:
+      - redis
+    networks:
+      - default
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./data/reis:/data"
+    expose:
+      - "6379"
+    networks:
+      - default
+ 
