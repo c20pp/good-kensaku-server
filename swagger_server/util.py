@@ -40,10 +40,10 @@ def _deserialize(data, klass):
         return deserialize_date(data)
     elif klass == datetime.datetime:
         return deserialize_datetime(data)
-    elif hasattr(klass, '__origin__'):
-        if klass.__origin__ == list:
+    elif type(klass) == typing.GenericMeta:
+        if klass.__extra__ == list:
             return _deserialize_list(data, klass.__args__[0])
-        if klass.__origin__ == dict:
+        if klass.__extra__ == dict:
             return _deserialize_dict(data, klass.__args__[1])
 
     else:
@@ -176,7 +176,7 @@ class Predictor:
         lsi_corpus = lsi_model[tfidf_corpus]
         vec = [[tup[1] for tup in vec] for vec in lsi_corpus]
         prob = gbm.predict(vec)
-        return prob
+        return prob.tolist()
 
     # 単語に分割する
     def _tokenize(self, text: str) -> List[str]:
