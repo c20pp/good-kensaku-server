@@ -1,3 +1,4 @@
+from typing import List
 import connexion
 import six
 
@@ -25,8 +26,7 @@ def filters(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Body.from_dict(connexion.request.get_json())  # noqa: E501
-    response = []
-    texts = []
+    texts: List[str] = []
     for _, url in enumerate(body.urls):
         try:
             text = oneURL2text.oneURL2text(url)
@@ -37,6 +37,6 @@ def filters(body):  # noqa: E501
             raise e
 
     predictor = util.Predictor()
-    response = predictor.predict(texts)
+    response: InlineResponse200 = predictor.predict(texts)
 
     return response
