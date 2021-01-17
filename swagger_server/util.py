@@ -163,7 +163,7 @@ class Predictor:
     def __init__(self) -> None:
         self.mt = MeCab.Tagger("")
 
-    def predict(self, texts: List[str]) -> List[int]:
+    def predict(self, texts: List[str]) -> List[float]:
         with open(f'{__main__.DATA_PATH}/dictionary.pickle', mode='rb') as f:
             dictionary = pickle.load(f)
         with open(f'{__main__.DATA_PATH}/gbm.pickle', mode='rb') as f:
