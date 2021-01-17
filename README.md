@@ -30,10 +30,7 @@ tox
 ```
 
 ## Dockerで動かす
-- `./data`に`jawiki.doc2vec.dbow300d.model.*`を置く
-    - ファイルがデカいので注意
-- `./data`に`model.pickle`を置く
-    - `model_ver_1_0_0.pickle`は動作確認済み
+- `./data`に`dictionary.pickle` `gbm.pickle`を置く
 
 ```bash
 # building the image
@@ -47,6 +44,6 @@ docker-compose up
 - キャッシュをしていないので、同じurlに何度もリクエストが行く可能性がある
 - `./data/error.csv`に`oneURL2text.oneURL2text(url)`で出たエラーが書かれる
     - 止めたい場合はコメントアウト！
-- doc2Vecの関係で起動が遅い・メモリをかなり消費する
+- ~~doc2Vecの関係で起動が遅い・メモリをかなり消費する~~
     - `MM = util.ModelMaker()`の周辺をコメントアウトで起動は速くなる
         - 当然doc2Vec周りの機能は使えなくなる
