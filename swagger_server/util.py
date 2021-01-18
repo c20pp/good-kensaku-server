@@ -160,26 +160,26 @@ def _deserialize_dict(data, boxed_type):
 
 
 class Predictor:
+
+    # load pickles and saved models
     def __init__(self) -> None:
-        self.mt = MeCab.Tagger("")
+        with open(f'{__main__.DATA_PATH}/dictionary.pickle', mode='rb') as f:
+            self.dictionary = pickle.load(f)
+        with open(f'{__main__.DATA_PATH}/gbm.pickle', mode='rb') as f:
+            self.gbm = pickle.load(f)
+        self.tfidf_model = models.TfidfModel.load(f'{__main__.DATA_PATH}/tfidf.model')
+        self.lsi_model = models.LsiModel.load(f'{__main__.DATA_PATH}/lsi.model')
 
     def predict(self, texts: List[str]) -> List[float]:
-        with open(f'{__main__.DATA_PATH}/dictionary.pickle', mode='rb') as f:
-            dictionary = pickle.load(f)
-        with open(f'{__main__.DATA_PATH}/gbm.pickle', mode='rb') as f:
-            gbm = pickle.load(f)
-        tokens = [self._tokenize(text) for text in texts]
-        bag = [dictionary.doc2bow(token) for token in tokens]
-        tfidf_model = models.TfidfModel(bag)
-        tfidf_corpus = tfidf_model[bag]
-        lsi_model = models.LsiModel(
-            tfidf_corpus, id2word=dictionary, num_topics=300)
-        lsi_corpus = lsi_model[tfidf_corpus]
-        vec = [[tup[1] for tup in vec] for vec in lsi_corpus]
-        prob = gbm.predict(vec)
-        return prob.tolist()
+        tokenized_texts = [self._tokenize(text) for text in texts]
+        bag_of_words = [self.dictionary.doc2bow(tokenized_text) for tokenized_text in tokenized_texts]
+        tfidf_corpus = self.tfidf_model[bag_of_words]
+        lsi_corpus = self.lsi_model[tfidf_corpus]
+        vector = pd.DataFrame([[val[1] for val in feature] for feature in lsi_corpus])
+        probability = self.gbm.predict(vector)
+        return probability.tolist()
 
-    # 単語に分割する
+    # 数字のみ取り除いている
     def _tokenize(self, text: str) -> List[str]:
         text = re.sub(r'[0-9０-９]+', " ", text)
         return MeCab.Tagger("-Owakati").parse(text).strip().split()
