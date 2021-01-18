@@ -161,22 +161,23 @@ def _deserialize_dict(data, boxed_type):
 
 class Predictor:
     def __init__(self) -> None:
-        self.mt = MeCab.Tagger("")
-
-    def predict(self, texts: List[str]) -> List[float]:
         with open(f'{__main__.DATA_PATH}/dictionary.pickle', mode='rb') as f:
-            dictionary = pickle.load(f)
+            self.dictionary = pickle.load(f)
         with open(f'{__main__.DATA_PATH}/gbm.pickle', mode='rb') as f:
-            gbm = pickle.load(f)
+            self.gbm = pickle.load(f)
+        self.tfidf_model = models.TfidfModel.load(f'{__main__.DATA_PATH}/tfidf.model')
+        self.lsi_model = models.LsiModel.load(f'{__main__.DATA_PATH}/lsi.model')
+
+    def predict(self, texts: List[str]) -> List[float]:        
         tokens = [self._tokenize(text) for text in texts]
-        bag = [dictionary.doc2bow(token) for token in tokens]
-        tfidf_model = models.TfidfModel(bag)
-        tfidf_corpus = tfidf_model[bag]
-        lsi_model = models.LsiModel(
-            tfidf_corpus, id2word=dictionary, num_topics=300)
-        lsi_corpus = lsi_model[tfidf_corpus]
-        vec = [[tup[1] for tup in vec] for vec in lsi_corpus]
-        prob = gbm.predict(vec)
+        bag = [self.dictionary.doc2bow(token) for token in tokens]
+        tfidf_corpus = self.tfidf_model[bag]
+        # mod = self.lsi_model
+        # lsi_model = models.LsiModel(tfidf_corpus, id2word=self.dictionary, num_topics=300)
+        lsi_corpus = self.lsi_model[tfidf_corpus]
+        vector = pd.DataFrame([[tup[1] for tup in vec] for vec in lsi_corpus])
+        # string = str(self.lsi_model.print_topic(0))
+        prob = self.gbm.predict(vector)
         return prob.tolist()
 
     # 単語に分割する
