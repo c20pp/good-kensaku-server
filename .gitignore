@@ -63,4 +63,6 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 
+# original
 data
+.vscode/settings.json
