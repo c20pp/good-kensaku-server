@@ -25,7 +25,7 @@ tox
 
 ## Dockerで動かす
 - `data`ディレクトリを作成する
-- `./data`に`dictionary.pickle` `gbm.pickle` `lsi.model` `tfidf.model`を置く
+- `./data`に`dictionary.pickle` `gbm.pickle` `lsi.model` `tfidf.model` `lsi.model.projection`を置く
 
 ```bash
 # building the image
