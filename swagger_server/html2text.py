@@ -29,7 +29,7 @@ def soup2textset(tag, text_set, tag_string):
         if isinstance(content, NavigableString):
             #content.string = content.string.replace('\xa9', '(c)').replace('\xa0', '')
             text_set.add(tag_string + content.string)
-        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer", "code"]:
+        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer"]:
             pass
         else:
             # print(content.name)
@@ -46,7 +46,7 @@ def removetags(tag, remove_text_set, tag_string):
         if isinstance(content, NavigableString):
             if (tag_string+content.string) in remove_text_set:
                 remove_lists.append(content)
-        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer"]:
+        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer", "code"]:
             remove_lists.append(content)
         else:
             removetags(content, remove_text_set,
