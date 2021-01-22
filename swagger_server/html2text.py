@@ -29,7 +29,7 @@ def soup2textset(tag, text_set, tag_string):
         if isinstance(content, NavigableString):
             #content.string = content.string.replace('\xa9', '(c)').replace('\xa0', '')
             text_set.add(tag_string + content.string)
-        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer"]:
+        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer", "code"]:
             pass
         else:
             # print(content.name)
