@@ -6,6 +6,9 @@ info:
   version: 1.0.0
 servers:
 - url: http://localhost:8080/api
+tags:
+- name: feedback
+  description: フィードバック関連
 paths:
   /filters:
     post:
@@ -19,16 +22,41 @@ paths:
         required: true
       responses:
         "200":
-          description: 結果を{0, 1}で取得
+          description: 結果を[0,1]で取得
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
               example:
-              - 0
-              - 1
-              - 0
+                results:
+                - 0.329345
+                - 0.238243
+                - 0.438929
       x-openapi-router-controller: swagger_server.controllers.default_controller
+  /feedback:
+    post:
+      tags:
+      - feedback
+      summary: 良いか悪いかをユーザーが判断
+      operationId: feedback
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+        required: true
+      responses:
+        "204":
+          description: ok
+        "400":
+          description: urlが不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+              example:
+                message: 該当urlに対して、予測をしていない
+      x-openapi-router-controller: swagger_server.controllers.feedback_controller
 components:
   schemas:
     body:
@@ -38,15 +66,29 @@ components:
           type: array
           items:
             type: string
+            format: url
     inline_response_200:
       type: object
       properties:
         results:
           type: array
           items:
-            type: integer
+            type: number
       example:
         results:
-        - 0
-        - 0
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+    body_1:
+      type: object
+      properties:
+        url:
+          type: string
+          format: url
+        user_evaluation:
+          type: boolean
+    inline_response_400:
+      type: object
+      properties:
+        message:
+          type: string
 

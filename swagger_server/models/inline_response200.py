@@ -14,15 +14,14 @@ class InlineResponse200(Model):
 
     Do not edit the class manually.
     """
-
-    def __init__(self, results: List[int] = None):  # noqa: E501
+    def __init__(self, results: List[float]=None):  # noqa: E501
         """InlineResponse200 - a model defined in Swagger
 
         :param results: The results of this InlineResponse200.  # noqa: E501
-        :type results: List[int]
+        :type results: List[float]
         """
         self.swagger_types = {
-            'results': List[int]
+            'results': List[float]
         }
 
         self.attribute_map = {
@@ -42,22 +41,22 @@ class InlineResponse200(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def results(self) -> List[int]:
+    def results(self) -> List[float]:
         """Gets the results of this InlineResponse200.
 
 
         :return: The results of this InlineResponse200.
-        :rtype: List[int]
+        :rtype: List[float]
         """
         return self._results
 
     @results.setter
-    def results(self, results: List[int]):
+    def results(self, results: List[float]):
         """Sets the results of this InlineResponse200.
 
 
         :param results: The results of this InlineResponse200.
-        :type results: List[int]
+        :type results: List[float]
         """
 
         self._results = results

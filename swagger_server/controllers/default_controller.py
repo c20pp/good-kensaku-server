@@ -47,7 +47,7 @@ def filters(body):  # noqa: E501
                 f.writelines([str(e), ", ", url, "\n"])
             raise e
 
-    results = []
+    results: List[float] = []
     if len(texts) != 0:
         predictor = util.Predictor()
         results = predictor.predict(texts)
@@ -58,6 +58,6 @@ def filters(body):  # noqa: E501
     for i, r in cached_rslt:
         results.insert(i, r)
 
-    response: InlineResponse200 = results
+    response: InlineResponse200 = {"results": results}
 
     return response
