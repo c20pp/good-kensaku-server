@@ -58,6 +58,6 @@ def filters(body):  # noqa: E501
     for i, r in cached_rslt:
         results.insert(i, r)
 
-    response: InlineResponse200 = {"results": results}
+    response = InlineResponse200.from_dict({"results": results})
 
     return response
