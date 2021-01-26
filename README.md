@@ -39,6 +39,3 @@ docker-compose up
 - ~~キャッシュをしていないので、同じurlに何度もリクエストが行く可能性がある~~
 - `./data/error.csv`に`oneURL2text.oneURL2text(url)`で出たエラーが書かれる
     - 止めたい場合はコメントアウト！
-- ~~doc2Vecの関係で起動が遅い・メモリをかなり消費する~~
-    - `MM = util.ModelMaker()`の周辺をコメントアウトで起動は速くなる
-        - 当然doc2Vec周りの機能は使えなくなる
