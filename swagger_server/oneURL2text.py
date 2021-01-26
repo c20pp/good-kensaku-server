@@ -6,19 +6,19 @@ import re
 from swagger_server import html2text
 
 
-def get_filename_reg(path: str) -> str:
-    res = ""
+def get_filename_reg(path: bytes) -> bytes:
+    res = b""
     for i in range(len(path)-1, -1, -1):
-        if path[i] == '/':
-            return "[^.\"]*"  # /:id 等
-        res += path[i]
-        if path[i] == '.':
+        if path[i:i+1] == b'/':
+            return b"[^.\"]*"  # /:id 等
+        res += path[i:i+1]
+        if path[i:i+1] == b'.':
             break
-    return "[^\"]*" + re.escape(res[::-1])
+    return b"[^\"]*" + re.escape(res[::-1])
 
 
-def find_url_from_html(html: str, baseurl: str) -> str:
-    domain_match = re.match("https?://[^/\"]+", baseurl)
+def find_url_from_html(html: bytes, baseurl: bytes) -> bytes:
+    domain_match = re.match(b"https?://[^/\"]+", baseurl)
     if not domain_match:
         print("invalid url: domain not found")
         return None
@@ -27,9 +27,9 @@ def find_url_from_html(html: str, baseurl: str) -> str:
     filename_reg = get_filename_reg(baseurl)
     # print(filename_reg)
     url_regex = re.compile(
-        "\"(" + re.escape(domain) + ")?/(([^/\"]+/)*" + filename_reg + ")\"")
+        b"\"(" + re.escape(domain) + b")?/(([^/\"]+/)*" + filename_reg+ b")\"")
 
-    found_uri = ""
+    found_uri = b""
     longest_prefix = -1
     lengthdiff_min = 0
     # 前方一致が最大で、文字数差が最小なuriを探す
@@ -56,10 +56,10 @@ def find_url_from_html(html: str, baseurl: str) -> str:
             longest_prefix = length
             lengthdiff_min = lengthdiff
 
-    if found_uri == "":
-        return ""
+    if found_uri == b"":
+        return b""
     #print(domain + "/" + found_uri)
-    return domain + "/" + found_uri
+    return domain + b"/" + found_uri
 
 
 charset_regex = re.compile(
@@ -75,18 +75,21 @@ def decode_to_str(html_content: bytes):
     return html_content.decode(charset.decode('utf-8'))  # getしたhtml(string)
 
 
-def oneURL_to_2htmls(url: str) -> List[str]:
+def oneURL_to_2htmls(url: str) -> List[bytes]:
     result_htmls = []
 
     html = requests.get(url)  # getしたhtml(bytes)
-    html_code = decode_to_str(html.content)  # getしたhtml(string)
+    #html_code = decode_to_str(html.content)  # getしたhtml(string)
+    html_code = html.content  # getしたhtml(byte)
     result_htmls.append(html_code)
 
-    foundurl = find_url_from_html(html_code, url)
+    foundurl = find_url_from_html(html_code, url.encode('utf-8'))
+
     # print(foundurl)
-    if foundurl != "":
+    if foundurl != b"":
         html = requests.get(foundurl)  # getしたhtml(bytes)
-        html_code = decode_to_str(html.content)  # getしたhtml(string)
+        #html_code = decode_to_str(html.content)  # getしたhtml(string)
+        html_code = html.content  # getしたhtml(byte)
         result_htmls.append(html_code)
 
     return result_htmls

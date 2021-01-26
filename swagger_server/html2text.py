@@ -9,14 +9,14 @@ import bs4
 assert '4.9.3' <= bs4.__version__, "please upgrade BeautifulSoup"
 
 
-def getBeautifulSoupBody(html):
-    bodyend_i = html.rfind("</body>")
+def getBeautifulSoupBody(html: bytes):
+    bodyend_i = html.rfind(b"</body>")
     if bodyend_i == -1:
         bodyend_i = len(html)
     else:
-        bodyend_i = bodyend_i + len("</body>")
-    html = html[max(0, html.find("<body>")):bodyend_i]
-    body = BeautifulSoup(html.replace("</li>", "\n</li>"), "lxml").find("body")
+        bodyend_i = bodyend_i + len(b"</body>")
+    html = html[max(0, html.find(b"<body>")):bodyend_i]
+    body = BeautifulSoup(html.replace(b"</li>", b"\n</li>"), "lxml").find("body")
     del html
     return body
 
@@ -72,7 +72,7 @@ def converttags(tag):
 # 同じドメインのhtml(string)群を受け取って、タグを削除したstringのlistを返す
 
 
-def html2text(htmls: List[str]) -> List[str]:
+def html2text(htmls: List[bytes]) -> List[str]:
     # 文字列抽出
     # soups = [BeautifulSoup(html.replace("</li>", "\n</li>"), "html.parser")
     #         for html in htmls[:min(3,len(htmls))]]
