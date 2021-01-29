@@ -19,7 +19,7 @@ def main():
         l2.append([v[0],v[1],result])
     with open('../data/feedback_next.csv',mode='w') as f:
         w = csv.writer(f)
-        w.writerows(l)
+        w.writerows(l2)
 
 if __name__=='__main__':
     main()
