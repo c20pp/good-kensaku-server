@@ -46,7 +46,7 @@ def removetags(tag, remove_text_set, tag_string):
         if isinstance(content, NavigableString):
             if (tag_string+content.string) in remove_text_set:
                 remove_lists.append(content)
-        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer", "code"]:
+        elif str.lower(content.name) in ["script", "meta", "style", "header", "footer"]:
             remove_lists.append(content)
         else:
             removetags(content, remove_text_set,
@@ -54,15 +54,17 @@ def removetags(tag, remove_text_set, tag_string):
     for content in remove_lists:
         content.extract()
     del remove_lists
-# imgとかを良い感じに処理したい
 
-
+#imgとかを良い感じに処理したい
 def converttags(tag):
     for content in tag.contents:
         if isinstance(content, NavigableString):
             pass
         elif str.lower(content.name) == "img":
-            content.string = " <<<img>>> "
+            content.string = " imageafdiyzbode "
+        elif str.lower(content.name) == "code":
+            content.string = " codeatusdixhbd "
+            content.contents = []
         else:
             converttags(content)
 
