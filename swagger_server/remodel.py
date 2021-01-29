@@ -17,7 +17,7 @@ def main():
         response = requests.post(url,param,headers=headers)
         result = json.loads(response.text)['results'][0]
         l2.append([v[0],v[1],result])
-    with open('../data/feedback_next.csv',mode='w') as f:
+    with open('../data/feedback_next.csv',mode='w',newline="") as f:
         w = csv.writer(f)
         w.writerows(l2)
 
